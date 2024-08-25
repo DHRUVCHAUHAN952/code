@@ -1,0 +1,37 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/bfhl', methods=['POST'])
+def handle_post():
+    try:
+        data = request.json.get('data', [])
+        if not isinstance(data, list):
+            raise ValueError("Invalid input, expected a list.")
+
+        numbers = [str(item) for item in data if item.isdigit()]
+        alphabets = [item for item in data if item.isalpha()]
+
+        lower_case_alphabets = [ch for ch in alphabets if ch.islower()]
+        highest_lowercase_alphabet = max(lower_case_alphabets) if lower_case_alphabets else None
+
+        response = {
+            "is_success": True,
+            "user_id": "dhruv_chauhan_25082004",  # Replace with dynamic user_id if required
+            "email": "dhruv@example.com",
+            "roll_number": "XYZ123",
+            "numbers": numbers,
+            "alphabets": alphabets,
+            "highest_lowercase_alphabet": [highest_lowercase_alphabet] if highest_lowercase_alphabet else []
+        }
+        return jsonify(response), 200
+
+    except Exception as e:
+        return jsonify({"is_success": False, "message": str(e)}), 400
+
+@app.route('/bfhl', methods=['GET'])
+def handle_get():
+    return jsonify({"operation_code": 1}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
